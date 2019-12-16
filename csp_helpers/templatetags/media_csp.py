@@ -18,7 +18,11 @@ def media_csp(context, _form):
 
     for url in _form.media._js:
         tags.append(
-            f'<script type="text/javascript" src="{static(url)}" nonce="{context.request.csp_nonce}"></script>'
+            format_html(
+                '<script type="text/javascript" src="{}" nonce="{}"></script>',
+                static(url),
+                context.request.csp_nonce
+            )
         )
 
     # I didn't write this. This comes from Django.
