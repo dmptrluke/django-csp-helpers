@@ -9,7 +9,7 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def render_bundle_csp(context, bundle_name, extension=None, config='DEFAULT', attrs=''):
     try:
-        attrs += f'nonce="{ context.request.csp_nonce }"'
+        attrs = ' '.join([attrs, f'nonce="{ context.request.csp_nonce }"'])
     except AttributeError:
         # ¯\_(ツ)_/¯
         pass
