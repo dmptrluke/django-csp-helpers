@@ -1,5 +1,5 @@
 # django-csp-helpers  [![PyPI](https://img.shields.io/pypi/v/django-csp-helpers)](https://pypi.org/project/django-csp-helpers/)
-A set of template tags (and mixins!) to assist in building CSP-enabled websites using 
+A set of template tags (and mixins!) to assist in building CSP-enabled websites using
 [django-csp](https://github.com/mozilla/django-csp).
 
 ## Install
@@ -19,13 +19,14 @@ allow for the use of CSP nonces in widgets and form media.
 Our example scenario is below:
 
     There is a contact form feature on our website that uses a FormView and
-    a Form. We want to add a recaptcha widget to this form, but the widget 
+    a Form. We want to add a recaptcha widget to this form, but the widget
     needs to use Javascript, which means we need a nonce available in the
     widget context. We also need to include external JS files, which means
     the form media needs to be CSP-aware too.
 
 ### How to use
-Simply add **CSPViewMixin** to your FormViews, and **CSPFormMixin** to your Forms or ModelForms.
+Simply add **CSPViewMixin** to your Views, and **CSPFormMixin** to your Forms or ModelForms.
+You will need to use both mixins together, they don't work alone.
 
 ```python
 from csp_helpers.mixins import CSPFormMixin
@@ -33,6 +34,16 @@ from csp_helpers.mixins import CSPFormMixin
 class ContactForm(CSPFormMixin, Form):
     ...
 ```
+
+#### Using only CSPFormMixin
+If you are managing your form manually, or not using class-based views, you will not be able
+to use **CSPViewMixin**. In these cases, just call your form with `csp_nonce` as an argument
+manually, like below.
+
+```python
+form = MyFancyForm(csp_nonce=request.csp_nonce)
+```
+
 
 ### What it does
 The *django-csp-helpers* mixins will modify and extend your views and forms in two ways.
@@ -50,7 +61,7 @@ Form media (CSS and JS) will be included with CSP nonces.
 
 
 ### render_bundle_csp
-An exact replacement for the [django-webpack-loader](https://github.com/owais/django-webpack-loader) 
+An exact replacement for the [django-webpack-loader](https://github.com/owais/django-webpack-loader)
 `render_bundle` tag that includes bundles with CSP nonces.
 
 ```djangotemplate
