@@ -38,9 +38,8 @@ class ContactForm(CSPFormMixin, Form):
 The *django-csp-helpers* mixins will modify and extend your views and forms in two ways.
 
 #### Form Widgets
-Form widgets will be wrapped in a **CSPAwareWidget**, which will inject a CSP nonce into
-the rendering context for template widgets. You can access this with `{{ csp_nonce }}` in 
-your widget templates.
+Form widgets will be patched to inject a CSP nonce into the rendering context for template
+widgets. You can access this with `{{ csp_nonce }}` in your widget templates.
 
 #### Form Media
 Form media (CSS and JS) will be included with CSP nonces.

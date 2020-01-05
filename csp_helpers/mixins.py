@@ -1,12 +1,12 @@
-from csp_helpers.classes import CSPAwareMedia, CSPAwareWidget
+import types
+
+from csp_helpers.classes import CSPAwareMedia
 
 
-class CSPViewMixin:
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if hasattr(self.request, 'csp_nonce'):
-            kwargs.update({'csp_nonce': self.request.csp_nonce})
-        return kwargs
+def patched_render(self, name, value, attrs=None, renderer=None):
+    context = self.get_context(name, value, attrs)
+    context['csp_nonce'] = self.csp_nonce
+    return self._render(self.template_name, context, renderer)
 
 
 class CSPFormMixin:
@@ -16,7 +16,9 @@ class CSPFormMixin:
             super().__init__(*args, **kwargs)
 
             for k, v in self.fields.items():
-                self.fields[k].widget = CSPAwareWidget(self.fields[k].widget, self.csp_nonce)
+                # monkeypatch the widget!
+                self.fields[k].widget.csp_nonce = self.csp_nonce
+                self.fields[k].widget.render = types.MethodType(patched_render, self.fields[k].widget)
 
         else:
             super().__init__(*args, **kwargs)
@@ -29,3 +31,11 @@ class CSPFormMixin:
             for field in self.fields.values():
                 media = media + field.widget.media
             return media
+
+
+class CSPViewMixin:
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if hasattr(self.request, 'csp_nonce'):
+            kwargs.update({'csp_nonce': self.request.csp_nonce})
+        return kwargs
