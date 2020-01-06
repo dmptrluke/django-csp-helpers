@@ -16,22 +16,25 @@ INSTALLED_APPS = [
 *django-csp-helpers* includes a pair of mixins that can be applied to views and forms to
 allow for the use of CSP nonces in widgets and form media.
 
-Our example scenario is below:
-
-    There is a contact form feature on our website that uses a FormView and
-    a Form. We want to add a recaptcha widget to this form, but the widget
-    needs to use Javascript, which means we need a nonce available in the
-    widget context. We also need to include external JS files, which means
-    the form media needs to be CSP-aware too.
-
 ### How to use
 Simply add **CSPViewMixin** to your Views, and **CSPFormMixin** to your Forms or ModelForms.
-You will need to use both mixins together, they don't work alone.
+You will need to use *both* mixins together, they don't work alone.
 
+**CSPFormMixin**
 ```python
 from csp_helpers.mixins import CSPFormMixin
 
-class ContactForm(CSPFormMixin, Form):
+class ArticleForm(CSPFormMixin, ModelForm):
+    ...
+```
+
+**CSPViewMixin**
+```python
+from csp_helpers.mixins import CSPViewMixin
+from .forms import ArticleForm
+
+class ArticleUpdateView(CSPViewMixin, UpdateView):
+    form_class = ArticleForm
     ...
 ```
 
@@ -41,7 +44,7 @@ to use **CSPViewMixin**. In these cases, just call your form with `csp_nonce` as
 manually, like below.
 
 ```python
-form = MyFancyForm(csp_nonce=request.csp_nonce)
+form = ArticleForm(csp_nonce=request.csp_nonce)
 ```
 
 
