@@ -15,10 +15,10 @@ class CSPFormMixin:
             self.csp_nonce = kwargs.pop('csp_nonce')
             super().__init__(*args, **kwargs)
 
-            for k, v in self.fields.items():
+            for _name, field in self.fields.items():
                 # monkeypatch the widget!
-                self.fields[k].widget.csp_nonce = self.csp_nonce
-                self.fields[k].widget.render = types.MethodType(patched_render, self.fields[k].widget)
+                field.widget.csp_nonce = self.csp_nonce
+                field.widget.render = types.MethodType(patched_render, field.widget)
 
         else:
             super().__init__(*args, **kwargs)

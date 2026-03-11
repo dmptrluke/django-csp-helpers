@@ -16,12 +16,12 @@ def media_csp(context, _form):
     """
     tags = []
 
+    # fmt: off
     for url in _form.media._js:
         tags.append(
             format_html(
                 '<script type="text/javascript" src="{}" nonce="{}"></script>',
-                static(url),
-                context.request.csp_nonce
+                static(url), context.request.csp_nonce
             )
         )
 
@@ -32,5 +32,6 @@ def media_csp(context, _form):
             static(path), medium, context.request.csp_nonce
         ) for path in _form.media._css[medium]
     ] for medium in sorted(_form.media._css))
+    # fmt: on
 
     return mark_safe('\n'.join(tags))

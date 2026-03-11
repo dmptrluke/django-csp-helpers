@@ -1,3 +1,5 @@
+import contextlib
+
 from django import template
 from django.utils.safestring import mark_safe
 
@@ -10,11 +12,8 @@ register = template.Library()
 
 
 def render_bundle_csp(context, bundle_name, extension=None, config='DEFAULT', attrs=''):
-    try:
-        attrs = ' '.join([attrs, f'nonce="{ context.request.csp_nonce }"'])
-    except AttributeError:
-        # ¯\_(ツ)_/¯
-        pass
+    with contextlib.suppress(AttributeError):
+        attrs = ' '.join([attrs, f'nonce="{context.request.csp_nonce}"'])
 
     tags = webpack_loader.utils.get_as_tags(bundle_name, extension=extension, config=config, attrs=attrs)
     return mark_safe('\n'.join(tags))

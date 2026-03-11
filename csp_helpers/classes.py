@@ -10,29 +10,31 @@ class CSPAwareMedia(Media):
             self.csp_nonce = kwargs.pop('csp_nonce')
 
         super().__init__(*args, **kwargs)
-        pass
 
     def render_js(self):
         if hasattr(self, 'csp_nonce'):
+            # fmt: off
             return [
                 format_html(
                     '<script type="text/javascript" src="{}" nonce="{}"></script>',
-                    self.absolute_path(path),
-                    self.csp_nonce
+                    self.absolute_path(path), self.csp_nonce
                 ) for path in self._js
             ]
+            # fmt: on
         else:
             return super().render_js()
 
     def render_css(self):
         if hasattr(self, 'csp_nonce'):
             media = sorted(self._css)
+            # fmt: off
             return chain.from_iterable([
                 format_html(
                     '<link href="{}" type="text/css" media="{}" nonce="{}" rel="stylesheet">',
                     self.absolute_path(path), medium, self.csp_nonce
                 ) for path in self._css[medium]
             ] for medium in media)
+            # fmt: on
         else:
             return super().render_css()
 
