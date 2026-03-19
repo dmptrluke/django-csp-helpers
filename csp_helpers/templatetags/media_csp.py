@@ -1,7 +1,6 @@
 from itertools import chain
 
 from django import template
-from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -24,14 +23,14 @@ def media_csp(context, _form):
         tags.append(
             format_html(
                 '<script type="text/javascript" src="{}" nonce="{}"></script>',
-                static(url), nonce
+                _form.media.absolute_path(url), nonce
             )
         )
 
     tags += chain.from_iterable([
         format_html(
             '<link href="{}" type="text/css" media="{}" rel="stylesheet" nonce="{}">',
-            static(path), medium, nonce
+            _form.media.absolute_path(path), medium, nonce
         ) for path in _form.media._css[medium]
     ] for medium in sorted(_form.media._css))
     # fmt: on
