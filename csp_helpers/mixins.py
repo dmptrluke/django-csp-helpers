@@ -1,6 +1,7 @@
 import types
 
 from csp_helpers.classes import CSPAwareMedia
+from csp_helpers.utils import get_nonce
 
 
 def patched_render(self, name, value, attrs=None, renderer=None):
@@ -36,6 +37,7 @@ class CSPFormMixin:
 class CSPViewMixin:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        if hasattr(self.request, 'csp_nonce'):
-            kwargs.update({'csp_nonce': self.request.csp_nonce})
+        nonce = get_nonce(self.request)
+        if nonce is not None:
+            kwargs['csp_nonce'] = nonce
         return kwargs

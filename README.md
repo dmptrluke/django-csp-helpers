@@ -1,6 +1,7 @@
 # django-csp-helpers  [![PyPI](https://img.shields.io/pypi/v/django-csp-helpers)](https://pypi.org/project/django-csp-helpers/)
 A set of template tags (and mixins!) to assist in building CSP-enabled websites using
-[django-csp](https://github.com/mozilla/django-csp).
+Django's [native CSP support](https://docs.djangoproject.com/en/6.0/ref/csp/) (6.0+)
+or [django-csp](https://github.com/mozilla/django-csp).
 
 ## Install
 

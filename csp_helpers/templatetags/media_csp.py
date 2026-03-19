@@ -5,6 +5,8 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from csp_helpers.utils import get_nonce_from_context
+
 register = template.Library()
 
 
@@ -14,6 +16,7 @@ def media_csp(context, _form):
     A template tag that takes a Form object in a request context,
      and spits out the correct tags with CSP nonces.
     """
+    nonce = get_nonce_from_context(context)
     tags = []
 
     # fmt: off
@@ -21,15 +24,14 @@ def media_csp(context, _form):
         tags.append(
             format_html(
                 '<script type="text/javascript" src="{}" nonce="{}"></script>',
-                static(url), context.request.csp_nonce
+                static(url), nonce
             )
         )
 
-    # I didn't write this. This comes from Django.
     tags += chain.from_iterable([
         format_html(
             '<link href="{}" type="text/css" media="{}" rel="stylesheet" nonce="{}">',
-            static(path), medium, context.request.csp_nonce
+            static(path), medium, nonce
         ) for path in _form.media._css[medium]
     ] for medium in sorted(_form.media._css))
     # fmt: on
