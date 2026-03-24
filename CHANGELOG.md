@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 - 2026-03-25
+
+- Mark as Production/Stable.
+
 ## 1.0.1
 
 - Fix `media_csp` template tag mangling absolute URLs (e.g. CDN URLs) by using
