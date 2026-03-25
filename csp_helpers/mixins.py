@@ -32,6 +32,7 @@ class CSPFormMixin:
             for field in self.fields.values():
                 media = media + field.widget.media
             return media
+        return super().media
 
 
 class CSPViewMixin:
