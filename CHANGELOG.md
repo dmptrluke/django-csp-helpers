@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4 - 2026-03-31
+
+- Improve PyPI metadata: add project URLs (Issues, Changelog), keywords, and SPDX license format
+- Enable digital attestations in the release workflow
+
 ## 1.0.3 - 2026-03-25
 
 - Fix issue where media returns nothing at all if CSP nonce is missing
